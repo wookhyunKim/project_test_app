@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:project_test_app/view/bmi.dart';
 import 'package:project_test_app/view/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -9,11 +11,45 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<Login> with WidgetsBindingObserver{
   bool _passwordVisible = false;
   TextEditingController upasswordController = TextEditingController();
   TextEditingController uidController = TextEditingController();
   bool _visibility = true;
+
+  late AppLifecycleState _lastLifeCycleState;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+    _initSharedPreferences(); // Shared Preference 초기화
+  }
+
+
+  //  ID PW 지우기    앱상태로 프린트찍기  => Observer
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+
+    switch (state){
+      case AppLifecycleState.detached:
+      print("detached");
+      break;
+      case AppLifecycleState.resumed:
+      print("resume");
+      break;
+      case AppLifecycleState.inactive:
+      _disposeSharedPreferences();
+      print("inactive");
+      break;
+      case AppLifecycleState.paused:
+      print("paused");
+      break;
+    }
+    _lastLifeCycleState =state;
+    super.didChangeAppLifecycleState(state);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +92,6 @@ class _LoginState extends State<Login> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      // 이것이 핵심 아이디어이다
                       suffixIcon: IconButton(
                         icon: Icon(
                           // passwordVisible 상태에 따라 아이콘을 선택한다
@@ -80,6 +115,7 @@ class _LoginState extends State<Login> {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: () {
+                    _showDialog();
                     _visibility = !_visibility;
                     setState(() {});
                   },
@@ -154,4 +190,86 @@ class _LoginState extends State<Login> {
       ],
     );
   }
+
+
+
+// ---------------- functions----------
+_initSharedPreferences() async {
+    final preference = await SharedPreferences.getInstance();
+    uidController.text = preference.getString("p_userId") ?? ""; // null 이면 빈문자를 넣는다.
+    upasswordController.text = preference.getString("p_password") ?? "";
+
+    // 메모리에 결과값이 남아있는지 테스트
+    // 앱을 종료하고 다시 실행하면 Shared Preference에 남아 있으므로
+    // 앱을 종료시 정리하여야 한다.
+
+    print(uidController.text);
+    print(upasswordController.text);
+  }
+
+
+_saveSharedPreferences() async {
+    // ID PW 를 저장함
+    final prefernece = await SharedPreferences.getInstance();
+    prefernece.setString("p_userId", uidController.text.trim());
+    prefernece.setString("p_password", upasswordController.text.trim());
+  }
+
+
+_disposeSharedPreferences() async {
+    // 저장된 ID PW를 지우기
+    final prefernece = await SharedPreferences.getInstance();
+    prefernece.clear();
+  }
+
+
+
+
+
+_showDialog() {
+     Get.defaultDialog(
+                  title: "로그인 성공",
+                  middleText: "로그인 성공되었습니다.",
+                  //backgroundColor: Colors.amber,
+                  barrierDismissible: false,
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        _saveSharedPreferences();
+                        Get.to(()=>const BMI());
+                      },
+                      child: const Text(
+                        "OK",
+                      ),
+                    ),
+                  ],
+                );
+              
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

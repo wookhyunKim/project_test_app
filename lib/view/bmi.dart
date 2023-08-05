@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BMI extends StatefulWidget {
   const BMI({super.key});
@@ -9,35 +10,29 @@ class BMI extends StatefulWidget {
   State<BMI> createState() => _BMIState();
 }
 
-class _BMIState extends State<BMI> with SingleTickerProviderStateMixin{
+class _BMIState extends State<BMI> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late List item;
+  late String userId;
+  late String password;
 
-    late AnimationController _animationController;
-    late List item;
-
-    
   @override
   void initState() {
     super.initState();
     _animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 2));
     _animationController.repeat();
-    item = [
-      "jumping.json",
-      "swim.json",
-      "walking.json"
-    ];
-
-
-
+    item = ["jumping.json", "swim.json", "walking.json"];
+    userId = "";
+    password = "";
+    _initSharedPreferences();
   }
 
-    @override
+  @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +41,8 @@ class _BMIState extends State<BMI> with SingleTickerProviderStateMixin{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text("ID : ${userId}"),
+            Text("PW : ${password}"),
             const Text(
               "BMI",
               style: TextStyle(
@@ -136,7 +133,9 @@ class _BMIState extends State<BMI> with SingleTickerProviderStateMixin{
                 return GestureDetector(
                   onTap: () {},
                   child: Card(
-                    color: index % 2 == 1 ? Colors.cyanAccent : Colors.lightGreenAccent,
+                    color: index % 2 == 1
+                        ? Colors.cyanAccent
+                        : Colors.lightGreenAccent,
                     child: Row(
                       children: [
                         Lottie.asset(
@@ -156,5 +155,14 @@ class _BMIState extends State<BMI> with SingleTickerProviderStateMixin{
         ),
       ),
     );
+  }
+
+//-- functions---
+
+  _initSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString("p_userId")!; // null check
+    password = prefs.getString("p_password")!;
+    setState(() {});
   }
 }
