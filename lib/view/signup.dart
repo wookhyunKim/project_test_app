@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
-import 'package:project_test_app/view/home.dart';
+import 'package:project_test_app/view/bmi.dart';
+//import 'package:project_test_app/view/home.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -160,7 +161,8 @@ class _SignUpState extends State<SignUp> {
                               padding: const EdgeInsets.all(20.0),
                               child: IconButton(
                                 onPressed: () {
-                                  Get.to(const Home());
+                                  //Get.to(const Home());
+                                 Get.to(BMI());
                                 },
                                 icon: Icon(Icons.check_circle)
                                 ),
