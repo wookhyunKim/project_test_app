@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:project_test_app/view_model/login_textfield.dart';
+import 'package:project_test_app/view_model/login.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -38,9 +38,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Lottie.asset(
-              "images/doctor.json",
-              controller: _animationController,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8,100,8,8),
+              child: Lottie.asset(
+                "images/doctor.json",
+                controller: _animationController,
+              ),
             ),
             const Login(),
           ],
