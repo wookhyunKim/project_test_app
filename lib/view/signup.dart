@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
-//import 'package:project_test_app/view/bmi.dart';
 import 'package:project_test_app/view_model/calendar.dart';
-//import 'package:project_test_app/view/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -12,7 +11,7 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _SignUpState extends State<SignUp> with WidgetsBindingObserver{
   late TextEditingController uidController;
   late TextEditingController upasswordController;
   late TextEditingController upasswordController2;
@@ -22,6 +21,8 @@ class _SignUpState extends State<SignUp> {
   late TextEditingController height;
   late TextEditingController weight;
   late String _passCheck;
+  late AppLifecycleState _lastLifeCycleState;
+
 
   @override
   void initState() {
@@ -36,7 +37,33 @@ class _SignUpState extends State<SignUp> {
     weight = TextEditingController();
     uphoneController = TextEditingController(text: "010");
     _passCheck = "";
+    WidgetsBinding.instance.addObserver(this);
+
   }
+
+  //  ID PW 지우기    앱상태로 프린트찍기  => Observer
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.detached:
+        print("detached");
+        break;
+      case AppLifecycleState.resumed:
+        print("resume");
+        break;
+      case AppLifecycleState.inactive:
+        _disposeSharedPreferences();
+        print("inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("paused");
+        break;
+    }
+    _lastLifeCycleState = state;
+    super.didChangeAppLifecycleState(state);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -219,4 +246,24 @@ class _SignUpState extends State<SignUp> {
         setState(() {
         });
   }
+
+
+
+
+
+
+  _disposeSharedPreferences() async {
+    // 저장된 ID PW를 지우기
+    final prefernece = await SharedPreferences.getInstance();
+    prefernece.clear();
+  }
+
+
+
+
+
+
+
+
+
 }
