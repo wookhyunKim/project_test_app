@@ -11,7 +11,7 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> with WidgetsBindingObserver{
+class _LoginState extends State<Login> with WidgetsBindingObserver {
   bool _passwordVisible = false;
   TextEditingController upasswordController = TextEditingController();
   TextEditingController uidController = TextEditingController();
@@ -27,27 +27,25 @@ class _LoginState extends State<Login> with WidgetsBindingObserver{
     _initSharedPreferences(); // Shared Preference 초기화
   }
 
-
   //  ID PW 지우기    앱상태로 프린트찍기  => Observer
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-
-    switch (state){
+    switch (state) {
       case AppLifecycleState.detached:
-      print("detached");
-      break;
+        print("detached");
+        break;
       case AppLifecycleState.resumed:
-      print("resume");
-      break;
+        print("resume");
+        break;
       case AppLifecycleState.inactive:
-      _disposeSharedPreferences();
-      print("inactive");
-      break;
+        _disposeSharedPreferences();
+        print("inactive");
+        break;
       case AppLifecycleState.paused:
-      print("paused");
-      break;
+        print("paused");
+        break;
     }
-    _lastLifeCycleState =state;
+    _lastLifeCycleState = state;
     super.didChangeAppLifecycleState(state);
   }
 
@@ -60,7 +58,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver{
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8,50,8,8),
+                padding: const EdgeInsets.fromLTRB(8, 50, 8, 8),
                 child: SizedBox(
                   width: 250,
                   child: TextFormField(
@@ -84,8 +82,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver{
                   child: TextFormField(
                     keyboardType: TextInputType.text,
                     controller: upasswordController,
-                    obscureText:
-                        !_passwordVisible, //이것은 텍스트를 동적으로 가리게 할 것이다
+                    obscureText: !_passwordVisible, //이것은 텍스트를 동적으로 가리게 할 것이다
                     decoration: InputDecoration(
                       labelText: 'Password',
                       hintText: 'Enter your password',
@@ -176,6 +173,9 @@ class _LoginState extends State<Login> with WidgetsBindingObserver{
                     color: Colors.purple, // 테두리 색상
                     width: 2.7, // 테두리 두께
                   ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)
+                  ),
                 ),
                 child: const Text(
                   "Log In",
@@ -191,12 +191,11 @@ class _LoginState extends State<Login> with WidgetsBindingObserver{
     );
   }
 
-
-
 // ---------------- functions----------
-_initSharedPreferences() async {
+  _initSharedPreferences() async {
     final preference = await SharedPreferences.getInstance();
-    uidController.text = preference.getString("p_userId") ?? ""; // null 이면 빈문자를 넣는다.
+    uidController.text =
+        preference.getString("p_userId") ?? ""; // null 이면 빈문자를 넣는다.
     upasswordController.text = preference.getString("p_password") ?? "";
 
     // 메모리에 결과값이 남아있는지 테스트
@@ -207,69 +206,36 @@ _initSharedPreferences() async {
     print(upasswordController.text);
   }
 
-
-_saveSharedPreferences() async {
+  _saveSharedPreferences() async {
     // ID PW 를 저장함
     final prefernece = await SharedPreferences.getInstance();
     prefernece.setString("p_userId", uidController.text.trim());
     prefernece.setString("p_password", upasswordController.text.trim());
   }
 
-
-_disposeSharedPreferences() async {
+  _disposeSharedPreferences() async {
     // 저장된 ID PW를 지우기
     final prefernece = await SharedPreferences.getInstance();
     prefernece.clear();
   }
 
-
-
-
-
-_showDialog() {
-     Get.defaultDialog(
-                  title: "로그인 성공",
-                  middleText: "로그인 성공되었습니다.",
-                  //backgroundColor: Colors.amber,
-                  barrierDismissible: false,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        _saveSharedPreferences();
-                        Get.to(()=>const BMI());
-                      },
-                      child: const Text(
-                        "OK",
-                      ),
-                    ),
-                  ],
-                );
-              
+  _showDialog() {
+    Get.defaultDialog(
+      title: "로그인 성공",
+      middleText: "로그인 성공되었습니다.",
+      //backgroundColor: Colors.amber,
+      barrierDismissible: false,
+      actions: [
+        TextButton(
+          onPressed: () {
+            _saveSharedPreferences();
+            Get.to(() => const BMI());
+          },
+          child: const Text(
+            "OK",
+          ),
+        ),
+      ],
+    );
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

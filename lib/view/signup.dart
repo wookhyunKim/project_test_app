@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
-import 'package:project_test_app/view/bmi.dart';
+//import 'package:project_test_app/view/bmi.dart';
+import 'package:project_test_app/view_model/calendar.dart';
 //import 'package:project_test_app/view/home.dart';
 
 class SignUp extends StatefulWidget {
@@ -162,7 +163,7 @@ class _SignUpState extends State<SignUp> {
                               child: IconButton(
                                 onPressed: () {
                                   //Get.to(const Home());
-                                 Get.to(BMI());
+                                Get.dialog(Calendar());
                                 },
                                 icon: Icon(Icons.check_circle)
                                 ),
